@@ -17,21 +17,26 @@ interface Props {
 }
 
 async function getGym(slug: string) {
-  const gym = await prisma.gym.findUnique({
-    where: { slug },
-    include: {
-      hours: { orderBy: { dayOfWeek: "asc" } },
-      amenities: true,
-      photos: { orderBy: { order: "asc" } },
-      memberships: { orderBy: { price: "asc" } },
-      reviews: {
-        include: { user: { select: { id: true, name: true, avatar: true } } },
-        orderBy: { createdAt: "desc" },
+  try {
+    const gym = await prisma.gym.findUnique({
+      where: { slug },
+      include: {
+        hours: { orderBy: { dayOfWeek: "asc" } },
+        amenities: true,
+        photos: { orderBy: { order: "asc" } },
+        memberships: { orderBy: { price: "asc" } },
+        reviews: {
+          include: { user: { select: { id: true, name: true, avatar: true } } },
+          orderBy: { createdAt: "desc" },
+        },
+        classes: { orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }] },
       },
-      classes: { orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }] },
-    },
-  });
-  return gym;
+    });
+    return gym;
+  } catch (error) {
+    console.error("Failed to fetch gym:", error);
+    return null;
+  }
 }
 
 export default async function GymDetailPage({ params }: Props) {
