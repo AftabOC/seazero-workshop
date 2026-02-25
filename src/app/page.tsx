@@ -3,6 +3,8 @@ import { Search, MapPin, Dumbbell, Heart, Zap, Users, Clock, Shield, ArrowRight,
 import GymCard, { GymCardData } from "@/components/GymCard";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 async function getFeaturedGyms(): Promise<GymCardData[]> {
   const gyms = await prisma.gym.findMany({
     where: { isActive: true },

@@ -10,6 +10,8 @@ import { prisma } from "@/lib/prisma";
 import StarRating from "@/components/StarRating";
 import { formatPrice, DAY_NAMES, GYM_TYPE_LABELS, PRICE_RANGE_LABELS, isGymOpen } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: { slug: string };
 }
