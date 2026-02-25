@@ -1,0 +1,306 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+model User {
+  id                String     @id @default(cuid())
+  name              String
+  email             String     @unique
+  emailVerified     DateTime?
+  avatar            String?
+  passwordHash      String?
+  fitnessGoals      String?    // JSON string: ["weight_loss", "muscle_gain"]
+  preferredWorkouts String?    // JSON string: ["yoga", "crossfit"]
+  budgetRange       String?    // e.g. "low", "medium", "high"
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  reviews    Review[]
+  favorites  Favorite[]
+  bookings   Booking[]
+  helpfuls   ReviewHelpful[]
+  reports    ReviewReport[]
+  checkins   CheckIn[]
+  accounts   Account[]
+  sessions   Session[]
+}
+
+// ─── NextAuth Models ─────────────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Gyms ────────────────────────────────────────────────────────────────────
+
+model Gym {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  address     String
+  lat         Float
+  lng         Float
+  phone       String?
+  website     String?
+  priceRange  String   // "budget", "mid", "premium"
+  type        String   // "commercial", "crossfit", "yoga", "women_only", "24x7", "budget"
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hours       GymHour[]
+  amenities   GymAmenity[]
+  photos      GymPhoto[]
+  memberships Membership[]
+  reviews     Review[]
+  favorites   Favorite[]
+  bookings    Booking[]
+  classes     GymClass[]
+  checkins    CheckIn[]
+  deals       Deal[]
+}
+
+// ─── Gym Hours ───────────────────────────────────────────────────────────────
+
+model GymHour {
+  id        String @id @default(cuid())
+  gymId     String
+  dayOfWeek Int    // 0=Sunday, 1=Monday, ..., 6=Saturday
+  openTime  String // "06:00"
+  closeTime String // "22:00"
+  isClosed  Boolean @default(false)
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, dayOfWeek])
+}
+
+// ─── Gym Amenities ───────────────────────────────────────────────────────────
+
+model GymAmenity {
+  id          String @id @default(cuid())
+  gymId       String
+  amenityName String // "pool", "sauna", "parking", "wifi", etc.
+  icon        String? // lucide icon name
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, amenityName])
+}
+
+// ─── Gym Photos ──────────────────────────────────────────────────────────────
+
+model GymPhoto {
+  id        String  @id @default(cuid())
+  gymId     String
+  url       String
+  caption   String?
+  isPrimary Boolean @default(false)
+  order     Int     @default(0)
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Memberships ─────────────────────────────────────────────────────────────
+
+model Membership {
+  id             String  @id @default(cuid())
+  gymId          String
+  planName       String  // "Monthly", "Quarterly", "Annual", "Day Pass"
+  price          Float
+  durationMonths Int     // 1, 3, 12, 0 (day pass)
+  features       String? // JSON string: ["access_all_areas", "personal_trainer"]
+  isPopular      Boolean @default(false)
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+model Review {
+  id            String   @id @default(cuid())
+  gymId         String
+  userId        String
+  rating        Float    // overall 1-5
+  cleanliness   Float?   // 1-5
+  equipment     Float?   // 1-5
+  staff         Float?   // 1-5
+  valueForMoney Float?   // 1-5
+  text          String
+  photos        String?  // JSON string: ["url1", "url2"]
+  isVerified    Boolean  @default(false)
+  helpfulCount  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  gym      Gym             @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  helpfuls ReviewHelpful[]
+  reports  ReviewReport[]
+
+  @@unique([gymId, userId])
+}
+
+// ─── Review Helpfuls ─────────────────────────────────────────────────────────
+
+model ReviewHelpful {
+  id       String @id @default(cuid())
+  reviewId String
+  userId   String
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+}
+
+// ─── Review Reports ──────────────────────────────────────────────────────────
+
+model ReviewReport {
+  id        String   @id @default(cuid())
+  reviewId  String
+  userId    String
+  reason    String   // "spam", "inappropriate", "fake"
+  createdAt DateTime @default(now())
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+}
+
+// ─── Favorites ───────────────────────────────────────────────────────────────
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  gymId     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gymId])
+}
+
+// ─── Bookings ────────────────────────────────────────────────────────────────
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  gymId       String
+  bookingType String   // "trial", "class", "inquiry"
+  date        String   // "2026-03-01"
+  timeSlot    String?  // "10:00"
+  status      String   @default("pending") // "pending", "confirmed", "cancelled", "completed"
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Gym Classes ─────────────────────────────────────────────────────────────
+
+model GymClass {
+  id         String @id @default(cuid())
+  gymId      String
+  className  String // "Yoga Flow", "HIIT Blast", "Zumba"
+  instructor String?
+  dayOfWeek  Int    // 0-6
+  startTime  String // "09:00"
+  endTime    String // "10:00"
+  capacity   Int    @default(20)
+  category   String // "yoga", "cardio", "strength", "dance", "martial_arts"
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Check-ins ───────────────────────────────────────────────────────────────
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  gymId     String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Deals ───────────────────────────────────────────────────────────────────
+
+model Deal {
+  id          String   @id @default(cuid())
+  gymId       String
+  title       String
+  description String?
+  discount    Int      // percentage off
+  validFrom   DateTime
+  validUntil  DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+}
+
+// ─── Project Tasks (Meta) ────────────────────────────────────────────────────
+
+model ProjectTask {
+  id        String @id // e.g. "P1-T1-S1"
+  phaseId   String
+  taskId    String
+  name      String
+  status    String @default("pending") // "pending", "in_progress", "done", "skipped"
+  testType  String // "command", "api", "render", "unit", "db_query", "file_exists", "interaction"
+  testSpec  String // JSON string with test details
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

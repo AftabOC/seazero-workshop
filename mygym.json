@@ -1,0 +1,1349 @@
+{
+  "project": "Find My Gym",
+  "version": "1.0.0",
+  "database": "mygym",
+  "created": "2026-02-25",
+  "phases": [
+    {
+      "id": "P1",
+      "name": "Foundation & Core Discovery",
+      "sprint": 1,
+      "priority": "critical",
+      "status": "pending",
+      "estimated_days": 3,
+      "tasks": [
+        {
+          "id": "P1-T1",
+          "name": "Project Setup",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T1-S1",
+              "name": "Initialize Next.js 14 with App Router, TypeScript, TailwindCSS",
+              "status": "pending",
+              "test": {
+                "type": "command",
+                "command": "cd /home/mahesh/seazero-workshop && npm run build",
+                "expected": "exit_code_0",
+                "description": "Project builds without errors"
+              }
+            },
+            {
+              "id": "P1-T1-S2",
+              "name": "Install shadcn/ui, lucide-react, prisma, next-auth",
+              "status": "pending",
+              "test": {
+                "type": "file_exists",
+                "files": ["package.json", "tailwind.config.ts", "prisma/schema.prisma"],
+                "description": "All config files exist"
+              }
+            },
+            {
+              "id": "P1-T1-S3",
+              "name": "Configure Prisma with PostgreSQL (mygym database)",
+              "status": "pending",
+              "test": {
+                "type": "command",
+                "command": "npx prisma validate",
+                "expected": "exit_code_0",
+                "description": "Prisma schema is valid"
+              }
+            },
+            {
+              "id": "P1-T1-S4",
+              "name": "Create base layout with header, footer, theme provider",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "expected": "Header and footer visible, no console errors",
+                "description": "Base layout renders correctly"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P1-T2",
+          "name": "Database Schema",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T2-S1",
+              "name": "Create 'gyms' table: id, name, slug, description, address, lat, lng, phone, website, price_range, type, image_url, created_at, updated_at",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'gyms'",
+                "expected_columns": ["id", "name", "slug", "description", "address", "lat", "lng", "phone", "website", "price_range", "type", "image_url", "created_at", "updated_at"],
+                "description": "Gyms table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S2",
+              "name": "Create 'gym_hours' table: id, gym_id (FK), day_of_week, open_time, close_time",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'gym_hours'",
+                "expected_columns": ["id", "gym_id", "day_of_week", "open_time", "close_time"],
+                "description": "Gym hours table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S3",
+              "name": "Create 'gym_amenities' table: id, gym_id (FK), amenity_name, icon",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'gym_amenities'",
+                "expected_columns": ["id", "gym_id", "amenity_name", "icon"],
+                "description": "Gym amenities table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S4",
+              "name": "Create 'gym_photos' table: id, gym_id (FK), url, caption, is_primary",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'gym_photos'",
+                "expected_columns": ["id", "gym_id", "url", "caption", "is_primary"],
+                "description": "Gym photos table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S5",
+              "name": "Create 'memberships' table: id, gym_id (FK), plan_name, price, duration_months, features (JSON)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'memberships'",
+                "expected_columns": ["id", "gym_id", "plan_name", "price", "duration_months", "features"],
+                "description": "Memberships table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S6",
+              "name": "Create 'users' table: id, name, email, avatar, password_hash, fitness_goals, preferred_workouts, budget_range, created_at",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'users'",
+                "expected_columns": ["id", "name", "email", "avatar", "password_hash", "fitness_goals", "preferred_workouts", "budget_range", "created_at"],
+                "description": "Users table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S7",
+              "name": "Create 'reviews' table: id, gym_id (FK), user_id (FK), rating, cleanliness, equipment, staff, value_for_money, text, photos, is_verified, helpful_count, created_at",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'reviews'",
+                "expected_columns": ["id", "gym_id", "user_id", "rating", "cleanliness", "equipment", "staff", "value_for_money", "text", "is_verified", "helpful_count", "created_at"],
+                "description": "Reviews table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S8",
+              "name": "Create 'favorites' table: id, user_id (FK), gym_id (FK), created_at",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'favorites'",
+                "expected_columns": ["id", "user_id", "gym_id", "created_at"],
+                "description": "Favorites table has all required columns with unique constraint"
+              }
+            },
+            {
+              "id": "P1-T2-S9",
+              "name": "Create 'bookings' table: id, user_id (FK), gym_id (FK), booking_type, date, time_slot, status, notes, created_at",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'bookings'",
+                "expected_columns": ["id", "user_id", "gym_id", "booking_type", "date", "time_slot", "status", "notes", "created_at"],
+                "description": "Bookings table has all required columns"
+              }
+            },
+            {
+              "id": "P1-T2-S10",
+              "name": "Create 'gym_classes' table: id, gym_id (FK), class_name, instructor, day_of_week, start_time, end_time, capacity, category",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT column_name FROM information_schema.columns WHERE table_name = 'gym_classes'",
+                "expected_columns": ["id", "gym_id", "class_name", "instructor", "day_of_week", "start_time", "end_time", "capacity", "category"],
+                "description": "Gym classes table has all required columns"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P1-T3",
+          "name": "Seed Data",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T3-S1",
+              "name": "Create seed script with 20+ sample gyms (varied types, locations, prices)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT COUNT(*) as count FROM gyms",
+                "expected": "count >= 20",
+                "description": "At least 20 gyms seeded"
+              }
+            },
+            {
+              "id": "P1-T3-S2",
+              "name": "Seed amenities for each gym (5-10 per gym)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT COUNT(*) as count FROM gym_amenities",
+                "expected": "count >= 100",
+                "description": "At least 100 amenity records seeded"
+              }
+            },
+            {
+              "id": "P1-T3-S3",
+              "name": "Seed operating hours for each gym (7 days)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT COUNT(*) as count FROM gym_hours",
+                "expected": "count >= 140",
+                "description": "Hours seeded for all gyms (7 days each)"
+              }
+            },
+            {
+              "id": "P1-T3-S4",
+              "name": "Seed membership plans (2-4 per gym)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT COUNT(*) as count FROM memberships",
+                "expected": "count >= 40",
+                "description": "At least 40 membership plans seeded"
+              }
+            },
+            {
+              "id": "P1-T3-S5",
+              "name": "Seed sample reviews (3-8 per gym)",
+              "status": "pending",
+              "test": {
+                "type": "db_query",
+                "query": "SELECT COUNT(*) as count FROM reviews",
+                "expected": "count >= 60",
+                "description": "At least 60 reviews seeded"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P1-T4",
+          "name": "Landing Page",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T4-S1",
+              "name": "Hero section with background image, tagline 'Find Your Perfect Gym', search bar",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "elements": ["h1", "input[type=text]", "button"],
+                "description": "Hero has heading, search input, and CTA button"
+              }
+            },
+            {
+              "id": "P1-T4-S2",
+              "name": "Location auto-detect button using browser Geolocation API",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/geolocation.test.ts",
+                "description": "Geolocation hook returns lat/lng or error state"
+              }
+            },
+            {
+              "id": "P1-T4-S3",
+              "name": "Manual address input with autocomplete",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "action": "Type address in search bar",
+                "expected": "Autocomplete dropdown appears",
+                "description": "Address autocomplete works"
+              }
+            },
+            {
+              "id": "P1-T4-S4",
+              "name": "Featured gyms carousel (top rated nearby)",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "expected": "Carousel shows gym cards with images, names, ratings",
+                "description": "Featured gyms section renders"
+              }
+            },
+            {
+              "id": "P1-T4-S5",
+              "name": "Quick category filters: Bodybuilding, Yoga, CrossFit, Swimming, Women-Only, Budget",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "expected": "Category chips/buttons visible and clickable",
+                "description": "Quick filter categories displayed"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P1-T5",
+          "name": "Gym Listing Page",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T5-S1",
+              "name": "List view: responsive card grid (image, name, rating stars, distance, price, top amenities)",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms",
+                "expected": "Grid of gym cards with all required info",
+                "description": "List view renders gym cards correctly"
+              }
+            },
+            {
+              "id": "P1-T5-S2",
+              "name": "Map view: interactive map with gym markers, click for popup preview",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms?view=map",
+                "expected": "Map renders with markers at gym locations",
+                "description": "Map view shows gym locations"
+              }
+            },
+            {
+              "id": "P1-T5-S3",
+              "name": "Toggle between list/map views",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click map/list toggle button",
+                "expected": "View switches between list and map",
+                "description": "View toggle works"
+              }
+            },
+            {
+              "id": "P1-T5-S4",
+              "name": "Filter panel: distance radius (1-25km slider), price range, rating, amenities checkboxes",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/filters.test.ts",
+                "description": "Filter logic correctly filters gym list"
+              }
+            },
+            {
+              "id": "P1-T5-S5",
+              "name": "Sort options: distance, rating, price (low-high), price (high-low), newest",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/sorting.test.ts",
+                "description": "Sort logic orders gyms correctly"
+              }
+            },
+            {
+              "id": "P1-T5-S6",
+              "name": "Search by gym name with real-time filtering",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Type gym name in search",
+                "expected": "List filters to matching gyms",
+                "description": "Name search filters results"
+              }
+            },
+            {
+              "id": "P1-T5-S7",
+              "name": "Pagination / infinite scroll",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?page=1&limit=12",
+                "expected_status": 200,
+                "expected_fields": ["gyms", "total", "page", "totalPages"],
+                "description": "Paginated API returns correct structure"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P1-T6",
+          "name": "API Routes - Core",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P1-T6-S1",
+              "name": "GET /api/gyms - list gyms with filters (lat, lng, radius, price, rating, amenities, sort, page, limit)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?lat=12.97&lng=77.59&radius=5",
+                "expected_status": 200,
+                "expected_fields": ["gyms", "total"],
+                "description": "Returns gyms within radius"
+              }
+            },
+            {
+              "id": "P1-T6-S2",
+              "name": "GET /api/gyms/[id] - single gym with all relations (hours, amenities, photos, memberships)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms/1",
+                "expected_status": 200,
+                "expected_fields": ["id", "name", "hours", "amenities", "photos", "memberships"],
+                "description": "Returns full gym detail with relations"
+              }
+            },
+            {
+              "id": "P1-T6-S3",
+              "name": "GET /api/gyms/search?q=name - search gyms by name",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms/search?q=fit",
+                "expected_status": 200,
+                "description": "Returns matching gyms"
+              }
+            },
+            {
+              "id": "P1-T6-S4",
+              "name": "GET /api/gyms/featured - top rated gyms for homepage",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms/featured",
+                "expected_status": 200,
+                "description": "Returns top rated gyms"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Gym Profiles & Detail Pages",
+      "sprint": 2,
+      "priority": "critical",
+      "status": "pending",
+      "estimated_days": 2,
+      "depends_on": ["P1"],
+      "tasks": [
+        {
+          "id": "P2-T1",
+          "name": "Gym Detail Page",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P2-T1-S1",
+              "name": "Header: gym name, type badge, overall rating, open/closed status",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Header shows gym name, badge, rating, status",
+                "description": "Gym header renders all info"
+              }
+            },
+            {
+              "id": "P2-T1-S2",
+              "name": "Photo gallery: hero image + thumbnail grid, lightbox on click",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click thumbnail image",
+                "expected": "Lightbox opens with full-size image",
+                "description": "Photo gallery lightbox works"
+              }
+            },
+            {
+              "id": "P2-T1-S3",
+              "name": "Info section: address, phone, website, description",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "All gym info fields displayed",
+                "description": "Info section complete"
+              }
+            },
+            {
+              "id": "P2-T1-S4",
+              "name": "Amenities grid: icon + label chips for all amenities",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Amenity chips with icons visible",
+                "description": "Amenities display correctly"
+              }
+            },
+            {
+              "id": "P2-T1-S5",
+              "name": "Operating hours: weekly schedule table with today highlighted, open/closed indicator",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/gymHours.test.ts",
+                "description": "isOpen() correctly determines current open/closed status"
+              }
+            },
+            {
+              "id": "P2-T1-S6",
+              "name": "Membership plans: pricing cards with features, highlighted 'Popular' plan",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Pricing cards with plan details visible",
+                "description": "Membership plans render correctly"
+              }
+            },
+            {
+              "id": "P2-T1-S7",
+              "name": "Mini map: embedded map showing gym location with marker",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Embedded map with gym pin visible",
+                "description": "Location map renders"
+              }
+            },
+            {
+              "id": "P2-T1-S8",
+              "name": "'Get Directions' button: opens Google Maps with gym coordinates",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click Get Directions",
+                "expected": "Opens Google Maps in new tab with destination set",
+                "description": "Directions link works"
+              }
+            },
+            {
+              "id": "P2-T1-S9",
+              "name": "Share button: copy link, share to social media",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click Share button",
+                "expected": "Share modal/menu appears",
+                "description": "Share functionality works"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P2-T2",
+          "name": "Similar Gyms",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P2-T2-S1",
+              "name": "'Similar Gyms Nearby' section at bottom of detail page (same type, within 5km)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms/[id]/similar",
+                "expected_status": 200,
+                "description": "Returns similar gyms by type and proximity"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Authentication & User Profiles",
+      "sprint": 2,
+      "priority": "high",
+      "status": "pending",
+      "estimated_days": 1.5,
+      "depends_on": [],
+      "tasks": [
+        {
+          "id": "P3-T1",
+          "name": "Authentication",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P3-T1-S1",
+              "name": "NextAuth.js setup with Google OAuth provider",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/auth/providers",
+                "expected_status": 200,
+                "expected_fields": ["google"],
+                "description": "Google OAuth provider configured"
+              }
+            },
+            {
+              "id": "P3-T1-S2",
+              "name": "Email/password credentials provider with bcrypt hashing",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/auth.test.ts",
+                "description": "Password hashing and verification works"
+              }
+            },
+            {
+              "id": "P3-T1-S3",
+              "name": "Sign up page: form with name, email, password, confirm password",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/auth/signup",
+                "expected": "Registration form with validation",
+                "description": "Sign up form renders with validation"
+              }
+            },
+            {
+              "id": "P3-T1-S4",
+              "name": "Login page: email/password form + Google OAuth button",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/auth/login",
+                "expected": "Login form and OAuth buttons visible",
+                "description": "Login page renders correctly"
+              }
+            },
+            {
+              "id": "P3-T1-S5",
+              "name": "Session management: JWT tokens, protected routes middleware",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/auth/session",
+                "expected_status": 200,
+                "description": "Session endpoint returns user data when logged in"
+              }
+            },
+            {
+              "id": "P3-T1-S6",
+              "name": "Header: show Login/Signup when logged out, Avatar/dropdown when logged in",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "expected": "Auth state reflected in header",
+                "description": "Header shows correct auth state"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P3-T2",
+          "name": "User Profile",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P3-T2-S1",
+              "name": "Profile page: view/edit name, avatar, fitness goals, preferred workouts, budget",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "PUT /api/users/profile",
+                "body": {"name": "Test User", "fitness_goals": "weight_loss"},
+                "expected_status": 200,
+                "description": "Profile update API works"
+              }
+            },
+            {
+              "id": "P3-T2-S2",
+              "name": "Favorites tab: grid of saved gyms with remove button",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/users/favorites",
+                "expected_status": 200,
+                "description": "Returns user's favorited gyms"
+              }
+            },
+            {
+              "id": "P3-T2-S3",
+              "name": "My Reviews tab: list of user's reviews with edit/delete",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/users/reviews",
+                "expected_status": 200,
+                "description": "Returns user's reviews"
+              }
+            },
+            {
+              "id": "P3-T2-S4",
+              "name": "My Bookings tab: upcoming and past bookings",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/users/bookings",
+                "expected_status": 200,
+                "description": "Returns user's bookings"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P3-T3",
+          "name": "Favorites API",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P3-T3-S1",
+              "name": "POST /api/favorites - add gym to favorites",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/favorites",
+                "body": {"gym_id": 1},
+                "expected_status": 201,
+                "description": "Gym added to favorites"
+              }
+            },
+            {
+              "id": "P3-T3-S2",
+              "name": "DELETE /api/favorites/[id] - remove from favorites",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "DELETE /api/favorites/1",
+                "expected_status": 200,
+                "description": "Gym removed from favorites"
+              }
+            },
+            {
+              "id": "P3-T3-S3",
+              "name": "Heart icon toggle on gym cards and detail page (optimistic UI)",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click heart icon on gym card",
+                "expected": "Heart fills/unfills, API called",
+                "description": "Favorite toggle works with optimistic update"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "Ratings & Reviews",
+      "sprint": 3,
+      "priority": "high",
+      "status": "pending",
+      "estimated_days": 2,
+      "depends_on": ["P2", "P3"],
+      "tasks": [
+        {
+          "id": "P4-T1",
+          "name": "Review Display",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P4-T1-S1",
+              "name": "Rating summary card: overall score, star distribution bar chart, category breakdown",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]#reviews",
+                "expected": "Rating summary with bar chart visible",
+                "description": "Rating summary renders correctly"
+              }
+            },
+            {
+              "id": "P4-T1-S2",
+              "name": "Review list: avatar, name, date, stars, text, photos, verified badge, helpful count",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]#reviews",
+                "expected": "Review cards with all fields displayed",
+                "description": "Review list renders completely"
+              }
+            },
+            {
+              "id": "P4-T1-S3",
+              "name": "Sort reviews: most recent, highest rated, lowest rated, most helpful",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/reviews?gym_id=1&sort=helpful",
+                "expected_status": 200,
+                "description": "Reviews sorted by helpful count"
+              }
+            },
+            {
+              "id": "P4-T1-S4",
+              "name": "Filter reviews by star rating (show only 5-star, 4-star, etc.)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/reviews?gym_id=1&rating=5",
+                "expected_status": 200,
+                "description": "Reviews filtered by rating"
+              }
+            },
+            {
+              "id": "P4-T1-S5",
+              "name": "Pagination for reviews (load more button)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/reviews?gym_id=1&page=2&limit=5",
+                "expected_status": 200,
+                "expected_fields": ["reviews", "total", "page"],
+                "description": "Review pagination works"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P4-T2",
+          "name": "Write Review",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P4-T2-S1",
+              "name": "Review form: star rating (overall + categories), text area, photo upload (up to 3)",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]/review",
+                "expected": "Review form with star inputs, text area, upload",
+                "description": "Review form renders completely"
+              }
+            },
+            {
+              "id": "P4-T2-S2",
+              "name": "POST /api/reviews - create review (auth required)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/reviews",
+                "body": {"gym_id": 1, "rating": 4, "text": "Great gym!"},
+                "expected_status": 201,
+                "description": "Review created successfully"
+              }
+            },
+            {
+              "id": "P4-T2-S3",
+              "name": "PUT /api/reviews/[id] - edit own review",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "PUT /api/reviews/1",
+                "body": {"rating": 5, "text": "Updated review"},
+                "expected_status": 200,
+                "description": "Review updated successfully"
+              }
+            },
+            {
+              "id": "P4-T2-S4",
+              "name": "DELETE /api/reviews/[id] - delete own review",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "DELETE /api/reviews/1",
+                "expected_status": 200,
+                "description": "Review deleted successfully"
+              }
+            },
+            {
+              "id": "P4-T2-S5",
+              "name": "Prevent duplicate reviews (one review per user per gym)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/reviews",
+                "body": {"gym_id": 1, "rating": 3, "text": "Duplicate"},
+                "expected_status": 409,
+                "description": "Duplicate review returns conflict"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P4-T3",
+          "name": "Review Interactions",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P4-T3-S1",
+              "name": "Mark review as helpful (toggle, one per user per review)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/reviews/1/helpful",
+                "expected_status": 200,
+                "description": "Helpful toggled successfully"
+              }
+            },
+            {
+              "id": "P4-T3-S2",
+              "name": "Report review (flag inappropriate content)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/reviews/1/report",
+                "body": {"reason": "spam"},
+                "expected_status": 200,
+                "description": "Review flagged for moderation"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "name": "Booking & Contact",
+      "sprint": 3,
+      "priority": "medium",
+      "status": "pending",
+      "estimated_days": 2,
+      "depends_on": ["P2", "P3"],
+      "tasks": [
+        {
+          "id": "P5-T1",
+          "name": "Trial Booking",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P5-T1-S1",
+              "name": "Book Trial CTA on gym detail page (prominent button)",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Book Trial button visible",
+                "description": "Trial CTA renders on gym page"
+              }
+            },
+            {
+              "id": "P5-T1-S2",
+              "name": "Booking modal: date picker, time slot selection, optional notes",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "action": "Click Book Trial",
+                "expected": "Modal with date picker and time slots",
+                "description": "Booking modal renders correctly"
+              }
+            },
+            {
+              "id": "P5-T1-S3",
+              "name": "POST /api/bookings - create booking (auth required)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/bookings",
+                "body": {"gym_id": 1, "type": "trial", "date": "2026-03-01", "time_slot": "10:00"},
+                "expected_status": 201,
+                "description": "Booking created successfully"
+              }
+            },
+            {
+              "id": "P5-T1-S4",
+              "name": "Booking confirmation page/modal with details and calendar add link",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "expected": "Confirmation with booking details and calendar link",
+                "description": "Confirmation displays correctly"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P5-T2",
+          "name": "Membership Inquiry",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P5-T2-S1",
+              "name": "Inquiry form on gym page: name, phone, email, interested plan, message",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]",
+                "expected": "Inquiry form with all fields",
+                "description": "Inquiry form renders"
+              }
+            },
+            {
+              "id": "P5-T2-S2",
+              "name": "POST /api/inquiries - submit inquiry",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "POST /api/inquiries",
+                "body": {"gym_id": 1, "name": "Test", "phone": "9999999999", "message": "Interested"},
+                "expected_status": 201,
+                "description": "Inquiry submitted successfully"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P5-T3",
+          "name": "Class Schedule",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P5-T3-S1",
+              "name": "Weekly class schedule table on gym detail page",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/gyms/[slug]#classes",
+                "expected": "Class schedule table with days, times, instructors",
+                "description": "Class schedule renders"
+              }
+            },
+            {
+              "id": "P5-T3-S2",
+              "name": "GET /api/gyms/[id]/classes - fetch class schedule",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms/1/classes",
+                "expected_status": 200,
+                "description": "Returns gym class schedule"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "name": "Smart Compare & Ranking",
+      "sprint": 4,
+      "priority": "medium",
+      "status": "pending",
+      "estimated_days": 2,
+      "depends_on": ["P1", "P4"],
+      "tasks": [
+        {
+          "id": "P6-T1",
+          "name": "Gym Comparison",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P6-T1-S1",
+              "name": "Add to Compare button on gym cards (max 3)",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click Add to Compare on 3 gyms",
+                "expected": "Compare bar appears at bottom with 3 selected gyms",
+                "description": "Compare selection works with max limit"
+              }
+            },
+            {
+              "id": "P6-T1-S2",
+              "name": "Compare page: side-by-side table with price, rating, distance, amenities, hours",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/compare?ids=1,2,3",
+                "expected": "Comparison table with all gym details side by side",
+                "description": "Compare page renders correctly"
+              }
+            },
+            {
+              "id": "P6-T1-S3",
+              "name": "Highlight best values in each row (lowest price, highest rating, etc.)",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/compare.test.ts",
+                "description": "Best value highlighting logic works"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P6-T2",
+          "name": "Smart Ranking",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P6-T2-S1",
+              "name": "Smart Score algorithm: weighted formula (distance 25%, rating 30%, price 20%, amenities 15%, reviews 10%)",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/smartScore.test.ts",
+                "cases": [
+                  "Gym with perfect rating + close distance scores highest",
+                  "Weight adjustments from user preferences change ranking",
+                  "Score is 0-100 range"
+                ],
+                "description": "Smart score calculation is correct"
+              }
+            },
+            {
+              "id": "P6-T2-S2",
+              "name": "Personalized ranking based on user profile preferences (if logged in)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?sort=smart&lat=12.97&lng=77.59",
+                "expected_status": 200,
+                "description": "Smart-sorted results returned"
+              }
+            },
+            {
+              "id": "P6-T2-S3",
+              "name": "'Best For' auto-labels: analyze amenities + reviews to tag gyms",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/bestForLabels.test.ts",
+                "cases": [
+                  "Gym with pool tagged 'Best for Swimming'",
+                  "Budget gym tagged 'Best Budget Option'",
+                  "Gym with yoga classes tagged 'Best for Yoga'"
+                ],
+                "description": "Best-for labels generated correctly"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P6-T3",
+          "name": "Advanced Filters",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P6-T3-S1",
+              "name": "Filter by gym type: Commercial, CrossFit Box, Yoga Studio, Women-Only, 24/7, Budget",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?type=crossfit",
+                "expected_status": 200,
+                "description": "Returns only CrossFit gyms"
+              }
+            },
+            {
+              "id": "P6-T3-S2",
+              "name": "Filter by specific amenities (multi-select)",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?amenities=pool,sauna",
+                "expected_status": 200,
+                "description": "Returns gyms with all selected amenities"
+              }
+            },
+            {
+              "id": "P6-T3-S3",
+              "name": "Filter by membership type: monthly, annual, day-pass available",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?has_daypass=true",
+                "expected_status": 200,
+                "description": "Returns gyms with day-pass option"
+              }
+            },
+            {
+              "id": "P6-T3-S4",
+              "name": "Filter by personal trainer availability",
+              "status": "pending",
+              "test": {
+                "type": "api",
+                "endpoint": "GET /api/gyms?has_trainer=true",
+                "expected_status": 200,
+                "description": "Returns gyms with trainers"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "name": "Engagement & Growth",
+      "sprint": 4,
+      "priority": "low",
+      "status": "pending",
+      "estimated_days": 2,
+      "depends_on": ["P2", "P3"],
+      "tasks": [
+        {
+          "id": "P7-T1",
+          "name": "Notifications",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P7-T1-S1",
+              "name": "Service worker registration for push notifications",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/sw.test.ts",
+                "description": "Service worker registers successfully"
+              }
+            },
+            {
+              "id": "P7-T1-S2",
+              "name": "Notification preferences page: toggle new gyms, deals, booking reminders",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/profile/notifications",
+                "expected": "Toggle switches for each notification type",
+                "description": "Notification preferences page renders"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P7-T2",
+          "name": "Deals & Offers",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P7-T2-S1",
+              "name": "Deals banner on homepage showing active promotions",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "route": "/",
+                "expected": "Deals banner/section visible if active deals exist",
+                "description": "Deals section renders"
+              }
+            },
+            {
+              "id": "P7-T2-S2",
+              "name": "Deal badge on gym cards with discount percentage",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "expected": "Gym card shows deal badge when deal is active",
+                "description": "Deal badge displays on cards"
+              }
+            }
+          ]
+        },
+        {
+          "id": "P7-T3",
+          "name": "Check-in & Social",
+          "status": "pending",
+          "subtasks": [
+            {
+              "id": "P7-T3-S1",
+              "name": "Check-in button on gym page (requires GPS proximity < 200m)",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/checkin.test.ts",
+                "cases": [
+                  "Check-in succeeds when within 200m",
+                  "Check-in fails when too far away"
+                ],
+                "description": "Proximity check works correctly"
+              }
+            },
+            {
+              "id": "P7-T3-S2",
+              "name": "Verified Visit badge on reviews from users who checked in",
+              "status": "pending",
+              "test": {
+                "type": "render",
+                "expected": "Verified badge appears on reviews from checked-in users",
+                "description": "Verified badge displays correctly"
+              }
+            },
+            {
+              "id": "P7-T3-S3",
+              "name": "Recently Viewed section on homepage (local storage, last 10)",
+              "status": "pending",
+              "test": {
+                "type": "unit",
+                "file": "__tests__/recentlyViewed.test.ts",
+                "cases": [
+                  "Stores gym ID in localStorage on visit",
+                  "Max 10 items, oldest removed",
+                  "No duplicates"
+                ],
+                "description": "Recently viewed logic works"
+              }
+            },
+            {
+              "id": "P7-T3-S4",
+              "name": "Share gym profile via native share API or copy link",
+              "status": "pending",
+              "test": {
+                "type": "interaction",
+                "action": "Click Share",
+                "expected": "Native share dialog or link copied toast",
+                "description": "Share functionality works"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "test_summary": {
+    "total_tests": 87,
+    "categories": {
+      "api": 28,
+      "render": 25,
+      "unit": 16,
+      "interaction": 12,
+      "db_query": 10,
+      "command": 2,
+      "file_exists": 1
+    }
+  },
+  "metadata": {
+    "total_phases": 7,
+    "total_tasks": 23,
+    "total_subtasks": 87,
+    "estimated_total_days": 14.5,
+    "tech_stack": {
+      "framework": "Next.js 14 (App Router)",
+      "language": "TypeScript",
+      "styling": "TailwindCSS + shadcn/ui",
+      "icons": "Lucide React",
+      "database": "PostgreSQL",
+      "orm": "Prisma",
+      "auth": "NextAuth.js",
+      "maps": "Leaflet / Mapbox GL JS",
+      "testing": "Vitest + React Testing Library",
+      "deployment": "Vercel / Netlify"
+    }
+  }
+}
