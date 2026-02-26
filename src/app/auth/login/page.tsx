@@ -2,17 +2,45 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Dumbbell, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { Dumbbell, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual auth
-    alert("Authentication coming soon! This is a demo.");
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("Invalid email or password");
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
@@ -27,9 +55,17 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-muted-foreground">Sign in to your FindMyGym account</p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
         {/* Google OAuth */}
         <button
           type="button"
+          onClick={handleGoogleSignIn}
           className="flex w-full items-center justify-center gap-3 rounded-xl border bg-card px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary transition-colors shadow-sm"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -95,9 +131,11 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl gradient-primary px-4 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity shadow-lg"
+            disabled={loading}
+            className="w-full rounded-xl gradient-primary px-4 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            Sign In
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 

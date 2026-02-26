@@ -3,11 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   MapPin, Phone, Globe, Clock, Star, ChevronRight,
-  Navigation, Share2, Heart, CheckCircle2, Users,
+  Navigation, CheckCircle2, Users,
   Dumbbell, Calendar, Tag,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import StarRating from "@/components/StarRating";
+import ReviewForm from "@/components/ReviewForm";
+import GymActions, { GymBookingButtons } from "@/components/GymActions";
+import TrackRecentView from "@/components/TrackRecentView";
 import { formatPrice, DAY_NAMES, GYM_TYPE_LABELS, PRICE_RANGE_LABELS, isGymOpen } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -51,6 +54,19 @@ export default async function GymDetailPage({ params }: Props) {
 
   const openStatus = isGymOpen(gym.hours);
 
+  const recentViewData = {
+    id: gym.id,
+    name: gym.name,
+    slug: gym.slug,
+    address: gym.address,
+    imageUrl: gym.imageUrl,
+    priceRange: gym.priceRange,
+    type: gym.type,
+    rating,
+    reviewCount: gym.reviews.length,
+    amenities: gym.amenities.map((a) => a.amenityName),
+  };
+
   // Rating distribution
   const ratingDist = [0, 0, 0, 0, 0];
   for (const r of gym.reviews) {
@@ -80,6 +96,7 @@ export default async function GymDetailPage({ params }: Props) {
 
   return (
     <div className="bg-secondary/30">
+      <TrackRecentView gym={recentViewData} />
       {/* Breadcrumb */}
       <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -157,12 +174,7 @@ export default async function GymDetailPage({ params }: Props) {
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2">
-                  <button className="flex h-10 w-10 items-center justify-center rounded-full border hover:bg-secondary transition-colors">
-                    <Heart className="h-5 w-5 text-muted-foreground" />
-                  </button>
-                  <button className="flex h-10 w-10 items-center justify-center rounded-full border hover:bg-secondary transition-colors">
-                    <Share2 className="h-5 w-5 text-muted-foreground" />
-                  </button>
+                  <GymActions gymId={gym.id} gymName={gym.name} gymSlug={gym.slug} />
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${gym.lat},${gym.lng}`}
                     target="_blank"
@@ -257,6 +269,9 @@ export default async function GymDetailPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            {/* Write a Review */}
+            <ReviewForm gymId={gym.id} />
 
             {/* Reviews */}
             <div className="rounded-2xl border bg-card p-6 shadow-sm" id="reviews">
@@ -373,12 +388,7 @@ export default async function GymDetailPage({ params }: Props) {
 
               {/* CTA Buttons */}
               <div className="mt-6 space-y-3">
-                <button className="w-full rounded-xl gradient-primary px-4 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">
-                  Book a Trial Visit
-                </button>
-                <button className="w-full rounded-xl border px-4 py-3 text-sm font-semibold text-foreground hover:bg-secondary transition-colors">
-                  Send Inquiry
-                </button>
+                <GymBookingButtons gymId={gym.id} gymName={gym.name} />
               </div>
             </div>
 

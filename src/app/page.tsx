@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search, MapPin, Dumbbell, Heart, Zap, Users, Clock, Shield, ArrowRight, TrendingUp } from "lucide-react";
 import GymCard, { GymCardData } from "@/components/GymCard";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -208,6 +209,9 @@ export default async function HomePage() {
           })}
         </div>
       </section>
+
+      {/* Recently Viewed */}
+      <RecentlyViewed />
 
       {/* CTA Section */}
       <section className="gradient-primary py-16">

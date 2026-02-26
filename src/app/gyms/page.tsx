@@ -55,6 +55,7 @@ function GymsPageContent() {
   const [type, setType] = useState(searchParams.get("type") || "");
   const [priceRange, setPriceRange] = useState(searchParams.get("priceRange") || "");
   const [sort, setSort] = useState(searchParams.get("sort") || "rating");
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [page, setPage] = useState(1);
 
   const fetchGyms = useCallback(async () => {
@@ -63,6 +64,7 @@ function GymsPageContent() {
     if (query) params.set("q", query);
     if (type) params.set("type", type);
     if (priceRange) params.set("priceRange", priceRange);
+    if (selectedAmenities.length > 0) params.set("amenities", selectedAmenities.join(","));
     if (sort) params.set("sort", sort);
     params.set("page", String(page));
     params.set("limit", "12");
@@ -77,7 +79,7 @@ function GymsPageContent() {
     } finally {
       setLoading(false);
     }
-  }, [query, type, priceRange, sort, page]);
+  }, [query, type, priceRange, selectedAmenities, sort, page]);
 
   useEffect(() => {
     fetchGyms();
@@ -88,11 +90,25 @@ function GymsPageContent() {
     setType("");
     setPriceRange("");
     setSort("rating");
+    setSelectedAmenities([]);
     setPage(1);
     router.push("/gyms");
   };
 
-  const hasActiveFilters = query || type || priceRange;
+  const hasActiveFilters = query || type || priceRange || selectedAmenities.length > 0;
+
+  const AMENITY_OPTIONS = [
+    "Swimming Pool", "Sauna", "Parking", "Wi-Fi", "Locker Room",
+    "Showers", "Air Conditioning", "Personal Trainer", "Group Classes",
+    "Cardio Zone", "Free Weights", "Functional Training", "Smoothie Bar",
+  ];
+
+  const toggleAmenity = (amenity: string) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
+    );
+    setPage(1);
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -161,7 +177,7 @@ function GymsPageContent() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Gym Type */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Gym Type</label>
@@ -197,6 +213,26 @@ function GymsPageContent() {
                     }`}
                   >
                     {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Amenities */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Amenities</label>
+              <div className="flex flex-wrap gap-2">
+                {AMENITY_OPTIONS.map((amenity) => (
+                  <button
+                    key={amenity}
+                    onClick={() => toggleAmenity(amenity)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                      selectedAmenities.includes(amenity)
+                        ? "bg-primary text-white"
+                        : "bg-secondary text-secondary-foreground hover:bg-primary/10"
+                    }`}
+                  >
+                    {amenity}
                   </button>
                 ))}
               </div>

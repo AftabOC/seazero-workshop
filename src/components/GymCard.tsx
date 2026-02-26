@@ -26,7 +26,21 @@ interface GymCardProps {
   gym: GymCardData;
 }
 
+function getBestForLabels(gym: GymCardData): string[] {
+  const labels: string[] = [];
+  if (gym.rating >= 4.5 && gym.reviewCount >= 3) labels.push("Top Rated");
+  if (gym.priceRange === "budget") labels.push("Best Value");
+  if (gym.type === "yoga") labels.push("Best for Yoga");
+  if (gym.type === "crossfit") labels.push("Best for CrossFit");
+  if (gym.type === "women_only") labels.push("Women Friendly");
+  if (gym.type === "24x7") labels.push("24/7 Access");
+  if (gym.amenities.includes("Swimming Pool")) labels.push("Has Pool");
+  if (gym.amenities.includes("Personal Trainer") && gym.priceRange !== "budget") labels.push("Pro Training");
+  return labels.slice(0, 2);
+}
+
 export default function GymCard({ gym }: GymCardProps) {
+  const bestForLabels = getBestForLabels(gym);
   return (
     <Link href={`/gyms/${gym.slug}`} className="group block">
       <div className="overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -103,6 +117,17 @@ export default function GymCard({ gym }: GymCardProps) {
                   +{gym.amenities.length - 3} more
                 </span>
               )}
+            </div>
+          )}
+
+          {/* Best For Labels */}
+          {bestForLabels.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {bestForLabels.map((label) => (
+                <span key={label} className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  {label}
+                </span>
+              ))}
             </div>
           )}
 

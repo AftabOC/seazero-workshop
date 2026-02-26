@@ -12,12 +12,19 @@ export async function GET(request: NextRequest) {
     const priceRange = searchParams.get("priceRange");
     const q = searchParams.get("q");
     const minRating = parseFloat(searchParams.get("minRating") || "0");
+    const amenities = searchParams.get("amenities");
 
     const where: Record<string, unknown> = { isActive: true };
 
     if (type) where.type = type;
     if (priceRange) where.priceRange = priceRange;
-    if (q) where.name = { contains: q };
+    if (q) where.name = { contains: q, mode: "insensitive" };
+    if (amenities) {
+      const amenityList = amenities.split(",").map((a) => a.trim()).filter(Boolean);
+      if (amenityList.length > 0) {
+        where.amenities = { some: { amenityName: { in: amenityList } } };
+      }
+    }
     if (minRating > 0) {
       // We'll filter by average rating after fetching
     }
